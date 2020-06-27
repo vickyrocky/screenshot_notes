@@ -9,22 +9,46 @@ from docx.shared import Cm
 
 num = input("Please select subject:\n 1.Math\n 2.Reasoning\n 3.English\n")
 subject = {'1':'math', '2':'reasoning', '3':'english'}
-filename = input("Enter chapter name:\n")
-
-def latest_number():
-	#todo if folder new then no previous files
+	
+def latest_file():
 	path = r'C:\Users\HIMANSHU\Desktop\quant_screen\\'+subject[num]+'\\images\\*'
 	total_files = glob.glob(path)
 	latest_file = max(total_files, key=os.path.getctime)
 	_, filenumber = os.path.split(latest_file)
+	return filenumber
+
+def guess_chapter():
+	filenumber = latest_file()
+	filenumber = re.findall(r'[a-zA-Z]+', filenumber[:-4])
+	response = input(f'Want to continue with {filenumber[0]}, enter y else enter chapter name:\n')
+	if response.lower() == 'y':
+		filename = filenumber[0]
+	else:
+		create = input("If you want to create new doc, enter y:\n")
+		if create.lower() =='y':
+			filename = response.lower()
+			doc = Document()
+			doc.save(r'C:\Users\HIMANSHU\Desktop\quant_screen\\'+subject[num]+'\\'+filename+r'.docx')
+		else:
+			filename = response.lower()
+			print(f"Opening {filename}.doc in edit mode.")
+	return filename
+	
+
+def latest_number():
+	#todo if folder new then no previous files
+	filenumber = latest_file()
 	if filename in filenumber:
 		nums = re.findall(r'[0-9]+', filenumber)
 	else:
-		nums = input(f"Please verify as chapter name {filename} is not same as latest modified image {filenumber}.")
+		print(f"Image count starting from 1 as chapter name {filename} is not same as latest modified image {filenumber}.")
+		nums = [0]
 	return int(nums[0])+1
-	
+
+filename = guess_chapter()		
 i=latest_number()
 
+print(f"latest number {i}, latest chapter {filename}, subject {subject[num]}.")
 def speak(bolo):
 	engine = pyttsx3.init()
 	engine.say(bolo)
