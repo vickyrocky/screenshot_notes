@@ -19,7 +19,7 @@ def latest_file():
 
 def guess_chapter():
 	filenumber = latest_file()
-	filenumber = re.findall(r'[a-zA-Z]+', filenumber[:-4])
+	filenumber = re.findall(r'[a-zA-Z&]+', filenumber[:-4])
 	response = input(f'Want to continue with {filenumber[0]}, enter y else enter chapter name:\n')
 	if response.lower() == 'y':
 		filename = filenumber[0]
